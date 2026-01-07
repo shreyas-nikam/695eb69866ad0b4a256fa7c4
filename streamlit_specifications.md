@@ -5,7 +5,7 @@
 
 ### Purpose of the Application
 
-This Streamlit application serves as an interactive tutorial, guiding Software Developers and Data Engineers (personas) through the foundational steps of building a scalable Python backend platform for AI solutions, specifically a "Predictive Intelligence Engine" (PIE). It focuses on practical application of modern Python development practices using tools like Poetry, FastAPI, Pydantic v2, and Docker, rather than just explaining theoretical concepts. The app aims to deepen understanding of project structure, robust configuration, API versioning, and production readiness.
+This Streamlit application serves as an interactive tutorial, guiding Software Developers and Data Engineers (personas) through the foundational steps of building a scalable Python backend platform for AI solutions. It focuses on practical application of modern Python development practices using tools like Poetry, FastAPI, Pydantic v2, and Docker, rather than just explaining theoretical concepts. The app aims to deepen understanding of project structure, robust configuration, API versioning, and production readiness.
 
 ### High-level Story Flow of the Application
 

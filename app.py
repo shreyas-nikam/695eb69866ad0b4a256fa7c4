@@ -14,7 +14,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from fastapi import FastAPI, APIRouter, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-st.set_page_config(page_title="QuLab: Foundation & Platform Setup", layout="wide")
+st.set_page_config(
+    page_title="QuLab: Foundation & Platform Setup", layout="wide")
 # Correct way to display image in sidebar:
 st.sidebar.image("https://www.quantuniversity.com/assets/img/logo5.jpg")
 st.sidebar.divider()
@@ -23,6 +24,7 @@ st.divider()
 
 # --- Define Settings class and get_settings function directly in app.py ---
 # This was previously assumed to be in 'source.py' but is required for interactive parts.
+
 
 class Settings(BaseSettings):
     '''Application settings with comprehensive validation.'''
@@ -52,18 +54,25 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: Optional[SecretStr] = None
 
     # Cost Management parameters
-    DAILY_COST_BUDGET_USD: float = Field(default=100.0, ge=0, description="Daily budget for external API costs in USD")
+    DAILY_COST_BUDGET_USD: float = Field(
+        default=100.0, ge=0, description="Daily budget for external API costs in USD")
 
     # Scoring Parameters for AI models
-    ALPHA_VR_WEIGHT: float = Field(default=0.60, ge=0.5, le=0.7, description="Weight for Alpha VR component")
-    BETA_SYNERGY_COEF: float = Field(default=0.15, ge=0.05, le=0.20, description="Coefficient for Beta synergy factor")
+    ALPHA_VR_WEIGHT: float = Field(
+        default=0.60, ge=0.5, le=0.7, description="Weight for Alpha VR component")
+    BETA_SYNERGY_COEF: float = Field(
+        default=0.15, ge=0.05, le=0.20, description="Coefficient for Beta synergy factor")
 
     # Component weights for a hypothetical AI scoring model (e.g., for user experience)
-    W_FLUENCY: float = Field(default=0.45, ge=0.0, le=1.0, description="Weight for fluency component")
-    W_DOMAIN: float = Field(default=0.35, ge=0.0, le=1.0, description="Weight for domain expertise component")
-    W_ADAPTIVE: float = Field(default=0.20, ge=0.0, le=1.0, description="Weight for adaptiveness component")
+    W_FLUENCY: float = Field(default=0.45, ge=0.0, le=1.0,
+                             description="Weight for fluency component")
+    W_DOMAIN: float = Field(default=0.35, ge=0.0, le=1.0,
+                            description="Weight for domain expertise component")
+    W_ADAPTIVE: float = Field(
+        default=0.20, ge=0.0, le=1.0, description="Weight for adaptiveness component")
 
-    GAMMA_EXPERIENCE: float = Field(default=0.15, ge=0.10, le=0.25, description="Gamma experience factor")
+    GAMMA_EXPERIENCE: float = Field(
+        default=0.15, ge=0.10, le=0.25, description="Gamma experience factor")
 
     @model_validator(mode='after')
     def validate_weight_sums(self) -> 'Settings':
@@ -73,15 +82,18 @@ class Settings(BaseSettings):
         '''
         vr_sum = self.W_FLUENCY + self.W_DOMAIN + self.W_ADAPTIVE
         if abs(vr_sum - 1.0) > 0.001:
-            raise ValueError(f"V^R weights must sum to 1.0. Got {vr_sum:.2f} (W_FLUENCY={self.W_FLUENCY}, W_DOMAIN={self.W_DOMAIN}, W_ADAPTIVE={self.W_ADAPTIVE})")
+            raise ValueError(
+                f"V^R weights must sum to 1.0. Got {vr_sum:.2f} (W_FLUENCY={self.W_FLUENCY}, W_DOMAIN={self.W_DOMAIN}, W_ADAPTIVE={self.W_ADAPTIVE})")
         return self
+
 
 @lru_cache
 def get_settings() -> Settings:
     '''Cached function to get application settings.'''
     return Settings()
 
-settings = get_settings() # Initialize settings globally for use in app.py
+
+settings = get_settings()  # Initialize settings globally for use in app.py
 
 # --- Initialize session state variables ---
 if 'page' not in st.session_state:
@@ -247,9 +259,9 @@ mkdir -p tests/{unit,integration,evals}
         project_root = "individual-air-platform"
         if os.path.exists(project_root):
             shutil.rmtree(project_root)
-        
+
         original_cwd = os.getcwd()
-        
+
         try:
             os.makedirs(project_root, exist_ok=True)
             os.chdir(project_root)
@@ -268,15 +280,19 @@ mkdir -p tests/{unit,integration,evals}
             os.makedirs("tests/integration", exist_ok=True)
             os.makedirs("tests/evals", exist_ok=True)
 
-            with open("src/air/__init__.py", "w") as f: pass
+            with open("src/air/__init__.py", "w") as f:
+                pass
             for path in ["src/air/api", "src/air/api/routes", "src/air/api/routes/v1", "src/air/api/routes/v2",
                          "src/air/config", "src/air/models", "src/air/services", "src/air/schemas"]:
-                with open(f"{path}/__init__.py", "w") as f: pass
+                with open(f"{path}/__init__.py", "w") as f:
+                    pass
 
             with open("pyproject.toml", "w") as f:
-                f.write("""[tool.poetry]\nname = "individual-air-platform"\nversion = "0.1.0"\ndescription = ""\nauthors = ["Your Name <you@example.com>"]\nreadme = "README.md"\npackages = [{\"include\" = \"air\", \"from\" = \"src\"}]\n\n[tool.poetry.dependencies]\npython = "^3.12"\nfastapi = "*"\nuvicorn = {\"extras\" = [\"standard\"], \"version\" = \"*\"}\npydantic = "*"\npydantic-settings = "*"\nhttpx = "*"\nsse-starlette = "*"\n\n\n[tool.poetry.group.dev.dependencies]\npytest = "*"\npytest-asyncio = "*"\npytest-cov = "*"\nblack = "*"\nruff = "*"\nmypy = "*"\n\n[build-system]\nrequires = ["poetry-core"]\nbuild-backend = "poetry.core.masonry.api"\n""")
+                f.write(
+                    """[tool.poetry]\nname = "individual-air-platform"\nversion = "0.1.0"\ndescription = ""\nauthors = ["Your Name <you@example.com>"]\nreadme = "README.md"\npackages = [{\"include\" = \"air\", \"from\" = \"src\"}]\n\n[tool.poetry.dependencies]\npython = "^3.12"\nfastapi = "*"\nuvicorn = {\"extras\" = [\"standard\"], \"version\" = \"*\"}\npydantic = "*"\npydantic-settings = "*"\nhttpx = "*"\nsse-starlette = "*"\n\n\n[tool.poetry.group.dev.dependencies]\npytest = "*"\npytest-asyncio = "*"\npytest-cov = "*"\nblack = "*"\nruff = "*"\nmypy = "*"\n\n[build-system]\nrequires = ["poetry-core"]\nbuild-backend = "poetry.core.masonry.api"\n""")
 
-            tree_output = ["Project directory structure and Poetry initialization conceptually completed."]
+            tree_output = [
+                "Project directory structure and Poetry initialization conceptually completed."]
             tree_output.append("Placeholder files and directories created:")
             for root, dirs, files in os.walk("."):
                 level = root.replace("./", "").count(os.sep)
@@ -284,9 +300,9 @@ mkdir -p tests/{unit,integration,evals}
                 tree_output.append(f"{indent}{os.path.basename(root)}/")
                 for f in files:
                     tree_output.append(f"{indent}    {f}")
-            
+
             return "\n".join(tree_output)
-        
+
         finally:
             os.chdir(original_cwd)
             st.session_state.project_initialized = True
@@ -297,8 +313,10 @@ mkdir -p tests/{unit,integration,evals}
                 output = simulate_project_init_action()
                 st.code(output, language="text")
     else:
-        st.success("Project structure conceptually initialized in a temporary location!")
-        st.markdown(f"To see the generated structure, you would typically run `ls -R individual-air-platform` in your terminal.")
+        st.success(
+            "Project structure conceptually initialized in a temporary location!")
+        st.markdown(
+            f"To see the generated structure, you would typically run `ls -R individual-air-platform` in your terminal.")
 
 elif st.session_state.page == "2. Configuration System":
     st.header("2. Robust Configuration with Pydantic v2")
@@ -309,7 +327,8 @@ elif st.session_state.page == "2. Configuration System":
     st.markdown(r"The formula for validating component weights is:")
     st.markdown(r"$$ W_{fluency} + W_{domain} + W_{adaptive} = 1.0 $$")
     st.markdown(r"where $W_{fluency}$ is the weight for the fluency component, $W_{domain}$ is the weight for the domain expertise component, and $W_{adaptive}$ is the weight for the adaptiveness component.")
-    st.markdown(f"This equation ensures that the individual contributions of different AI model aspects (fluency, domain relevance, adaptability) are correctly normalized and collectively account for the total score, preventing miscalibration of the model's output. If the sum deviates significantly, for example, $abs(W_{sum} - 1.0) > 0.001$, a `ValueError` is raised, indicating an \"invalid configuration\".")
+    st.markdown(
+        f"This equation ensures that the individual contributions of different AI model aspects (fluency, domain relevance, adaptability) are correctly normalized and collectively account for the total score, preventing miscalibration of the model's output. If the sum deviates significantly, for example, $abs(W_{sum} - 1.0) > 0.001$, a `ValueError` is raised, indicating an \"invalid configuration\".")
 
     st.subheader("Implementation (`src/air/config/settings.py`)")
     st.code(
@@ -372,7 +391,7 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Cached function to get application settings."""
     return Settings()
-        ''', 
+        ''',
         language="python"
     )
 
@@ -407,7 +426,7 @@ def get_settings() -> Settings:
     )
 
     def validate_and_display_settings():
-        get_settings.cache_clear() # Clear cache to ensure new settings are loaded
+        get_settings.cache_clear()  # Clear cache to ensure new settings are loaded
 
         # Temporarily set environment variables to simulate loading from .env
         # and allow Pydantic Settings to pick them up
@@ -422,34 +441,45 @@ def get_settings() -> Settings:
 
         output_messages = []
         try:
-            current_settings = get_settings() # Reload settings with potentially new env vars
+            current_settings = get_settings()  # Reload settings with potentially new env vars
             output_messages.append(f"✅ Configuration Loaded Successfully!")
-            output_messages.append(f"**Application Name:** {current_settings.APP_NAME}")
-            output_messages.append(f"**Environment:** {current_settings.APP_ENV}")
-            output_messages.append(f"**VR Weights:** Fluency={current_settings.W_FLUENCY}, Domain={current_settings.W_DOMAIN}, Adaptive={current_settings.W_ADAPTIVE}")
-            output_messages.append(f"**Sum of VR Weights:** {current_settings.W_FLUENCY + current_settings.W_DOMAIN + current_settings.W_ADAPTIVE:.3f}")
+            output_messages.append(
+                f"**Application Name:** {current_settings.APP_NAME}")
+            output_messages.append(
+                f"**Environment:** {current_settings.APP_ENV}")
+            output_messages.append(
+                f"**VR Weights:** Fluency={current_settings.W_FLUENCY}, Domain={current_settings.W_DOMAIN}, Adaptive={current_settings.W_ADAPTIVE}")
+            output_messages.append(
+                f"**Sum of VR Weights:** {current_settings.W_FLUENCY + current_settings.W_DOMAIN + current_settings.W_ADAPTIVE:.3f}")
 
             if current_settings.OPENAI_API_KEY:
-                output_messages.append(f"**OPENAI_API_KEY (masked by SecretStr):** {current_settings.OPENAI_API_KEY}")
+                output_messages.append(
+                    f"**OPENAI_API_KEY (masked by SecretStr):** {current_settings.OPENAI_API_KEY}")
                 if st.session_state.show_raw_api_key:
-                    output_messages.append(f"**Raw API Key (revealed):** `{current_settings.OPENAI_API_KEY.get_secret_value()}`")
+                    output_messages.append(
+                        f"**Raw API Key (revealed):** `{current_settings.OPENAI_API_KEY.get_secret_value()}`")
             else:
                 output_messages.append(f"**OPENAI_API_KEY:** Not set.")
 
-            st.session_state.current_settings_summary = "\n".join(output_messages)
+            st.session_state.current_settings_summary = "\n".join(
+                output_messages)
             st.session_state.config_validation_output = "success"
 
-        except Exception as e: # Catch ValidationErrors and other exceptions
+        except Exception as e:  # Catch ValidationErrors and other exceptions
             st.session_state.config_validation_output = f"❌ Configuration Validation Failed: {e}"
             st.session_state.current_settings_summary = ""
         finally:
             # Clean up environment variables
-            if 'W_FLUENCY' in os.environ: del os.environ['W_FLUENCY']
-            if 'W_DOMAIN' in os.environ: del os.environ['W_DOMAIN']
-            if 'W_ADAPTIVE' in os.environ: del os.environ['W_ADAPTIVE']
-            if 'OPENAI_API_KEY' in os.environ: del os.environ['OPENAI_API_KEY']
-            get_settings.cache_clear() # Clear cache again for subsequent runs
-            
+            if 'W_FLUENCY' in os.environ:
+                del os.environ['W_FLUENCY']
+            if 'W_DOMAIN' in os.environ:
+                del os.environ['W_DOMAIN']
+            if 'W_ADAPTIVE' in os.environ:
+                del os.environ['W_ADAPTIVE']
+            if 'OPENAI_API_KEY' in os.environ:
+                del os.environ['OPENAI_API_KEY']
+            get_settings.cache_clear()  # Clear cache again for subsequent runs
+
     st.button("Validate Configuration", on_click=validate_and_display_settings)
 
     if st.session_state.config_validation_output:
@@ -457,10 +487,11 @@ def get_settings() -> Settings:
             st.success("Configuration validated successfully!")
             st.markdown(st.session_state.current_settings_summary)
             # This checkbox needs to trigger re-validation to update the display of the API key
-            new_show_raw_api_key = st.checkbox("Show raw OpenAI API Key value", value=st.session_state.show_raw_api_key, key="show_raw_api_key_checkbox")
+            new_show_raw_api_key = st.checkbox(
+                "Show raw OpenAI API Key value", value=st.session_state.show_raw_api_key, key="show_raw_api_key_checkbox")
             if new_show_raw_api_key != st.session_state.show_raw_api_key:
                 st.session_state.show_raw_api_key = new_show_raw_api_key
-                validate_and_display_settings() # Re-validate to update raw key display
+                validate_and_display_settings()  # Re-validate to update raw key display
         else:
             st.error(st.session_state.config_validation_output)
 
@@ -470,7 +501,8 @@ elif st.session_state.page == "3. FastAPI Application Core":
     st.markdown(f"1.  **Application Lifespan Management:** Using FastAPI's `lifespan` context manager ensures that startup tasks (e.g., database connections, caching initialization) and shutdown tasks (e.g., closing connections, resource cleanup) are handled gracefully. This prevents resource leaks and ensures a clean application lifecycle (addressing **Mistake 3: Missing lifespan context manager**).")
     st.markdown(f"2.  **CORS Middleware:** For web applications that might call the API from different domains, Cross-Origin Resource Sharing (CORS) is essential for security and interoperability. `CORSMiddleware` handles the necessary HTTP headers to allow or restrict access.")
     st.markdown(f"3.  **Custom Request Timing Middleware:** To monitor performance and aid in debugging, Alex implements a custom middleware that measures the processing time for each request and adds a unique request ID. This provides valuable observability without cluttering the main business logic.")
-    st.markdown(f"These foundational elements are critical for building a reliable and observable API.")
+    st.markdown(
+        f"These foundational elements are critical for building a reliable and observable API.")
 
     st.subheader("Implementation (`src/air/api/main.py`)")
     st.code(
@@ -563,19 +595,22 @@ def create_app() -> FastAPI:
 
 # The 'app' instance is created globally in source.py during initial import,
 # but for interactive demonstration, we simulate its lifecycle aspects.
-        ''', 
+        ''',
         language="python"
     )
 
     def simulate_lifespan_action():
         # Ensure settings are up-to-date for simulation
-        current_settings = get_settings() 
+        current_settings = get_settings()
 
         st.session_state.lifespan_log.clear()
-        st.session_state.lifespan_log.append(f"🚀 Starting {current_settings.APP_NAME} v{current_settings.APP_VERSION} in {current_settings.APP_ENV} environment...")
-        st.session_state.lifespan_log.append("✨ Application startup complete: Database connections, cache initialized.")
+        st.session_state.lifespan_log.append(
+            f"🚀 Starting {current_settings.APP_NAME} v{current_settings.APP_VERSION} in {current_settings.APP_ENV} environment...")
+        st.session_state.lifespan_log.append(
+            "✨ Application startup complete: Database connections, cache initialized.")
         st.session_state.lifespan_log.append("👋 Shutting down application...")
-        st.session_state.lifespan_log.append("🛑 Application shutdown complete: Resources released.")
+        st.session_state.lifespan_log.append(
+            "🛑 Application shutdown complete: Resources released.")
         st.session_state.fastapi_app_configured = True
         # st.rerun() # Not needed here, as the log is displayed immediately after
         # This will trigger an update, but we want to display the log directly without full rerun cycle for immediate feedback.
@@ -584,29 +619,34 @@ def create_app() -> FastAPI:
     st.markdown(f"Click the button below to conceptually simulate the FastAPI application's startup and shutdown sequence, demonstrating the `lifespan` context manager and middleware configuration.")
     if st.button("Simulate App Startup & Shutdown"):
         simulate_lifespan_action()
-    
+
     if st.session_state.fastapi_app_configured:
         st.success("FastAPI application is conceptually configured!")
         st.markdown("**Lifespan Simulation Output:**")
         for log_entry in st.session_state.lifespan_log:
             st.markdown(f"- {log_entry}")
-        
+
         st.markdown(f"**Conceptual API Endpoints:**")
         st.markdown(f"- `/health` (Health Check Endpoint)")
-        st.markdown(f"- `{settings.API_V1_PREFIX}/status` (API v1 Status Endpoint)")
-        st.markdown(f"- `{settings.API_V2_PREFIX}/status` (API v2 Status Endpoint)")
+        st.markdown(
+            f"- `{settings.API_V1_PREFIX}/status` (API v1 Status Endpoint)")
+        st.markdown(
+            f"- `{settings.API_V2_PREFIX}/status` (API v2 Status Endpoint)")
         st.markdown(f"The `create_app` function embodies the **application factory pattern**, allowing flexible setup. CORS and custom timing middleware are integrated for security and observability.")
 
 elif st.session_state.page == "4. API Versioning":
     st.header("4. API Versioning for Scalability and Evolution")
     st.markdown(f"Alex understands that AI models and service contracts evolve rapidly. To prevent breaking changes for existing users while simultaneously introducing new features or improved models, a clear API versioning strategy is crucial. By defining separate `APIRouter` instances for `v1` and `v2` and associating them with distinct URL prefixes (`/api/v1` and `/api/v2`), he ensures that different versions of the API can coexist. This allows InnovateAI Solutions to deprecate older versions gracefully and onboard new clients to improved interfaces without forcing immediate migrations. This separation is fundamental for maintaining backward compatibility and enabling agile development of new features.")
-    
-    st.markdown(f"The strategy employs **URI Versioning**, where the API version is embedded directly into the URL path, for example:")
+
+    st.markdown(
+        f"The strategy employs **URI Versioning**, where the API version is embedded directly into the URL path, for example:")
     st.code(f"https://api.innovateai.com/api/v1/predict", language="text")
     st.markdown(r"where `/api/v1` denotes the first version of the API.")
     st.code(f"https://api.innovateai.com/api/v2/predict", language="text")
-    st.markdown(r"where `/api/v2` denotes the second, potentially updated, version of the API.")
-    st.markdown(f"This approach makes the version explicit and easily understandable by clients.")
+    st.markdown(
+        r"where `/api/v2` denotes the second, potentially updated, version of the API.")
+    st.markdown(
+        f"This approach makes the version explicit and easily understandable by clients.")
 
     st.subheader("Conceptual Implementation in `main.py`")
     st.code(
@@ -622,12 +662,12 @@ elif st.session_state.page == "4. API Versioning":
     return app
         """,
         language="python",
-        help="This shows how versioned routers are included in the FastAPI app."
     )
     st.markdown(f"This section confirms the logical separation of API versions. By conceptually demonstrating how `v1_router` and `v2_router` would be populated with version-specific endpoints, Alex has laid the groundwork for future API development. New features or breaking changes can be introduced in `v2` without impacting `v1` clients, providing a robust pathway for the PIE platform's growth and evolution. The health check endpoint ensures basic service availability can always be monitored.")
 
 elif st.session_state.page == "5. Production Readiness":
-    st.header("5. Conceptualizing Containerization and CI/CD for Production Readiness")
+    st.header(
+        "5. Conceptualizing Containerization and CI/CD for Production Readiness")
     st.markdown(f"Alex understands that for InnovateAI Solutions to deploy the \"Predictive Intelligence Engine\" reliably, containerization and a robust Continuous Integration/Continuous Deployment (CI/CD) pipeline are essential. These practices ensure that the application runs consistently across different environments and that code changes are automatically tested and validated.")
     st.markdown(f"**Containerization with Docker:** Docker provides isolated, portable environments for the application. This eliminates \"it works on my machine\" problems by packaging the application and all its dependencies into a single, deployable unit (a Docker image). Alex envisions a `Dockerfile` that builds the application image and a `docker-compose.yml` file for defining how the application services (e.g., FastAPI, database, Redis) run together in a local development environment.")
     st.markdown(f"**GitHub Actions Workflow:** For automated testing and quality assurance, Alex will set up a GitHub Actions workflow. This CI pipeline will automatically lint the code, run unit and integration tests, and check code coverage every time changes are pushed to the repository. This proactive approach catches bugs early, maintains code quality, and ensures that only validated code makes it to production.")
@@ -651,8 +691,10 @@ elif st.session_state.page == "5. Production Readiness":
     st.markdown(f"- Installing Python dependencies with Poetry.")
     st.markdown(f"- Running `black` for consistent code formatting.")
     st.markdown(f"- Running `ruff` for fast code linting.")
-    st.markdown(f"- Executing `pytest` for comprehensive unit and integration tests.")
-    st.markdown(f"- Checking code coverage with `pytest-cov` to ensure sufficient test coverage.")
+    st.markdown(
+        f"- Executing `pytest` for comprehensive unit and integration tests.")
+    st.markdown(
+        f"- Checking code coverage with `pytest-cov` to ensure sufficient test coverage.")
     st.markdown(f"Example conceptual file:")
     st.code(
         """
@@ -698,7 +740,7 @@ print(f"Using key: {settings.OPENAI_API_KEY}")
         """
 # WRONG - No lifespan specified
 app = FastAPI() # Resources leak on shutdown
-        """, 
+        """,
         language="python"
     )
     st.markdown(f"**Fix:** Always use FastAPI's `lifespan` context manager to define startup and shutdown logic. This ensures a controlled lifecycle for application resources. The **3. FastAPI Application Core** page demonstrates the correct integration of `lifespan`.")

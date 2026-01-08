@@ -8,7 +8,7 @@ scipy
 seaborn
 plotly
 requests
-"uvicorn[standard]"
+uvicorn
 fastapi
 pydantic
 pydantic-settings
